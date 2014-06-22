@@ -11,3 +11,7 @@ SPLIT=~/coreutils/build/split
 $SPLIT -b 10
 $SPLIT -C 4
 $SPLIT -b 10 -C 4
+
+$SPLIT -b 10 in.txt pre
+$SPLIT -b 3 - pre
+$SPLIT in.txt
