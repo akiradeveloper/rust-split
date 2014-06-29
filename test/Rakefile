@@ -1,0 +1,10 @@
+desc "Run all tests"
+task "run_tests"
+
+NEW_SPLIT="~/coreutils/build/split"
+OLD_SPLIT="split"
+
+def register_test(no, args)
+  task "run_test_#{no}" do    
+  end
+end 
