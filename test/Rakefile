@@ -32,8 +32,8 @@ def register_test(no, args)
     end
   end
 
-  desc "run test #{no}"
-  task "run#{no}" do    
+  desc "run test #{no} (#{args})"
+  task "run#{no}" => ["clean"] do    
     run_split.call("new")
     run_split.call("old")
     check_output.call
@@ -47,3 +47,57 @@ task "clean" do
 end
 
 register_test(0, "-b 1 TEST0")
+
+touch "GENTESTS"
+def register_gentests
+  gentests = File.read("GENTESTS").split "\n"
+  gentests.each_with_index do |args, i|
+    register_test(1000 + i, "#{args} GEN#{i}")
+  end
+end
+register_gentests
+
+@gen_i = 0
+def generate_random_file(range)
+  f = "GEN#{@gen_i}"
+  touch f
+
+  l1 = (1..rand(range)).to_a.map { |x| 'a' }
+  l2 = (1..rand(1..10)).to_a.map { |x| rand(1..(l1.size-1)) }
+  l2.sort!
+  l2.reverse!
+
+  l2.each do |i|
+    l1.insert(i, "\n")
+  end
+
+  File.open(f, "w") do |handle|
+    s = l1.join
+    handle.write(s)
+  end
+end
+
+def generate_random_test(type, range)
+  args = "-#{type} #{rand(range)}" 
+  sh "echo #{args} >> GENTESTS"
+  @gen_i += 1
+end
+
+N=10
+desc "generate tests"
+task "gen_tests" do
+  sh "rm GEN*"
+  sh "echo -n > GENTESTS" # clean
+  N.times do
+    generate_random_file(10..1000)
+    generate_random_test('l', 1..1000)
+  end
+  N.times do
+    generate_random_file(10..1000)
+    generate_random_test('b', 1..1000)
+  end
+  N.times do
+    generate_random_file(10..1000)
+    generate_random_test('C', 1..1000)
+  end
+end
