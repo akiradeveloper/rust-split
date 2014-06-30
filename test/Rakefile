@@ -1,3 +1,5 @@
+require "benchmark"
+
 desc "Run all tests"
 task "run_tests"
 
@@ -12,7 +14,10 @@ def register_test(no, args)
     command = call_new ? NEW_SPLIT : OLD_SPLIT
     prefix = call_new ? "NEW" : "OLD"
     com = command + " " + args + " "  + prefix
-    sh com
+    result = Benchmark.realtime do
+      `#{com}`
+    end
+    result
   end
 
   check_output = lambda do
@@ -34,8 +39,10 @@ def register_test(no, args)
 
   desc "run test #{no} (#{args})"
   task "run#{no}" => ["clean"] do    
-    run_split.call("new")
-    run_split.call("old")
+    print "#{no}, "
+    t1 = run_split.call("new")
+    t2 = run_split.call("old")
+    puts "new(#{t1}), old(#{t2})"
     check_output.call
   end
   task "run_tests" => "run#{no}"
@@ -43,7 +50,7 @@ end
 
 desc "clean up output files"
 task "clean" do
-  sh "rm NEW* OLD*"
+  `rm NEW* OLD*`
 end
 
 register_test(0, "-b 1 TEST0")
@@ -86,7 +93,7 @@ end
 N=10
 desc "generate tests"
 task "gen_tests" do
-  sh "rm GEN*"
+  `rm GEN*`
   sh "echo -n > GENTESTS" # clean
   N.times do
     generate_random_file(10..1000)
