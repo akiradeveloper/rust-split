@@ -10,15 +10,17 @@ SPLIT=~/coreutils/build/split
 # $SPLIT --help
 # split --help
 
-$SPLIT -a 3
-$SPLIT -a "xxx"
+$SPLIT -l 2 TEST1.txt
 
-$SPLIT -b 10
-$SPLIT -C 4
-$SPLIT -b 10 -C 4
-
-$SPLIT -b 10 in.txt pre
-$SPLIT -b 7 - pre
-$SPLIT in.txt
-
-$SPLIT hoge.txt
+# $SPLIT -a 3
+# $SPLIT -a "xxx"
+#
+# $SPLIT -b 10
+# $SPLIT -C 4
+# $SPLIT -b 10 -C 4
+#
+# $SPLIT -b 10 in.txt pre
+# $SPLIT -b 7 - pre
+# $SPLIT in.txt
+#
+# $SPLIT hoge.txt

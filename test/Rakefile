@@ -3,9 +3,9 @@ require "benchmark"
 desc "Run all tests"
 task "run_tests"
 
-NEW_SPLIT="split"
+NEW_SPLIT="~/coreutils/build/split"
+# NEW_SPLIT="split"
 OLD_SPLIT="split"
-# NEW_SPLIT="~/coreutils/build/split"
 
 # args = options input
 def register_test(no, args)
@@ -53,7 +53,7 @@ task "clean" do
   `rm NEW* OLD*`
 end
 
-register_test(0, "-b 1 TEST0")
+# register_test(0, "-l 1 TEST0")
 
 touch "GENTESTS"
 def register_gentests
@@ -99,12 +99,12 @@ task "gen_tests" do
     generate_random_file(10..1000)
     generate_random_test('l', 1..1000)
   end
-  N.times do
-    generate_random_file(10..1000)
-    generate_random_test('b', 1..1000)
-  end
-  N.times do
-    generate_random_file(10..1000)
-    generate_random_test('C', 1..1000)
-  end
+  # N.times do
+  #   generate_random_file(10..1000)
+  #   generate_random_test('b', 1..1000)
+  # end
+  # N.times do
+  #   generate_random_file(10..1000)
+  #   generate_random_test('C', 1..1000)
+  # end
 end
