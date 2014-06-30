@@ -1,10 +1,49 @@
 desc "Run all tests"
 task "run_tests"
 
-NEW_SPLIT="~/coreutils/build/split"
+NEW_SPLIT="split"
 OLD_SPLIT="split"
+# NEW_SPLIT="~/coreutils/build/split"
 
+# args = options input
 def register_test(no, args)
-  task "run_test_#{no}" do    
+  run_split = lambda do |which| 
+    call_new = which == "new"
+    command = call_new ? NEW_SPLIT : OLD_SPLIT
+    prefix = call_new ? "NEW" : "OLD"
+    com = command + " " + args + " "  + prefix
+    sh com
   end
+
+  check_output = lambda do
+    new_list = `ls NEW*`.split
+    old_list = `ls OLD*`.split
+    raise "#{no}: the number of output files not same" unless new_list.size == old_list.size
+
+    # string, string -> bool
+    file_check = lambda do |a, b|
+      eq = File.read(a) == File.read(b)
+      raise "#{no}: file content not same" unless eq
+    end
+
+    new_list.each do |a|
+      b = "OLD" + a.slice(3, a.size - 3)
+      file_check.call(a, b)
+    end
+  end
+
+  desc "run test #{no}"
+  task "run#{no}" do    
+    run_split.call("new")
+    run_split.call("old")
+    check_output.call
+  end
+  task "run_tests" => "run#{no}"
 end 
+
+desc "clean up output files"
+task "clean" do
+  sh "rm NEW* OLD*"
+end
+
+register_test(0, "-b 1 TEST0")
