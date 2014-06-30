@@ -38,7 +38,8 @@ def register_test(no, args)
   end
 
   desc "run test #{no} (#{args})"
-  task "run#{no}" => ["clean"] do    
+  task "run#{no}" do    
+    `rm NEW* OLD*`
     print "#{no}, "
     t1 = run_split.call("new")
     t2 = run_split.call("old")
