@@ -6,6 +6,8 @@ task "run_tests"
 NEW_SPLIT="~/coreutils/build/split"
 # NEW_SPLIT="split"
 OLD_SPLIT="split"
+# BUSYBOX_SRC="~/busybox-1.22.1"
+# OLD_SPLIT="#{BUSYBOX_SRC}/busybox split"
 
 # args = options input
 def register_test(no, args)
@@ -54,9 +56,9 @@ task "clean" do
   `rm NEW* OLD*`
 end
 
-register_test(0, "-a 5 -d -l 1 TEST0")
+register_test(0, "-a 5 -l 1 TEST0")
 register_test(1, "-b 1 TEST0")
-register_test(2, "-d -b 4 TEST0")
+register_test(2, "-b 4 TEST0")
 
 touch "GENTESTS"
 def register_gentests
